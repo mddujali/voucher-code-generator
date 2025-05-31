@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\Auth;
 
+use App\Models\User;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Feature\Api\BaseTestCase;
@@ -36,17 +37,23 @@ class RegisterTest extends BaseTestCase
 
     public function test_it_should_register_a_user(): void
     {
+        $data = [
+            'name' => 'John Doe',
+            'email' => 'john.doe@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ];
+
         $this->whenICallThisEndpoint(
             method: 'post',
             uri: $this->uri,
-            data: [
-                'name' => 'John Doe',
-                'email' => 'john.doe@example.com',
-                'password' => 'password',
-                'password_confirmation' => 'password',
-            ],
+            data: $data,
             headers: $this->headers
         );
+
+        $user = User::query()
+            ->where('email', $data['email'])
+            ->first();
 
         $this->thenIExpectAResponse(Response::HTTP_CREATED);
         $this->thenIExpectAResponseStructure([
@@ -56,7 +63,8 @@ class RegisterTest extends BaseTestCase
                 'access_token',
             ],
         ]);
-        $this->thenIExpectInDatabase('users', ['name' => 'John Doe', 'email' => 'john.doe@example.com']);
+        $this->thenIExpectInDatabase('users', ['name' => $data['name'], 'email' => $data['email']]);
+        $this->thenIExpectInDatabase('vouchers', ['user_id' => $user->id]);
     }
 
     public static function invalidFieldsDataProvider(): Generator
@@ -96,7 +104,7 @@ class RegisterTest extends BaseTestCase
             [
                 'name' => 'John Doe',
                 'email' => 'john.doe@example.com',
-                'password' => 'password',
+                'password' => 'passwordIncorrect',
                 'password_confirmation' => 'incorrectPassword',
             ],
         ];

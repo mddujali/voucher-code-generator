@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Api\Auth\LoginRequest;
+use App\Models\PersonalAccessToken;
 use Exception;
 use Illuminate\Http\Response;
 
@@ -26,7 +27,7 @@ class LoginController extends BaseController
 
         return $this->successResponse(
             data: [
-                'token_type' => 'Bearer',
+                'token_type' => PersonalAccessToken::TOKEN_TYPE,
                 'access_token' => $request->user()
                     ->createToken($data['email'])
                     ->plainTextToken,
