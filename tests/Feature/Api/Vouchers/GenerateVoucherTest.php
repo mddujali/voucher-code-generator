@@ -2,23 +2,15 @@
 
 namespace Tests\Feature\Api\Vouchers;
 
-use App\Models\User;
 use App\Models\Voucher;
 use Illuminate\Http\Response;
 use Laravel\Sanctum\Sanctum;
-use Tests\Feature\Api\BaseTestCase;
 
-class GenerateVoucherTest extends BaseTestCase
+class GenerateVoucherTest extends VoucherTestCase
 {
-    private User $user;
-
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->user = User::query()
-            ->where('email', 'test@example.com')
-            ->first();
 
         $this->givenIHaveThisRoute(route('api.vouchers.generate'));
     }

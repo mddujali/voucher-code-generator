@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Profile\CurrentUserController;
 use App\Http\Controllers\Api\Vouchers\GenerateVoucherController;
+use App\Http\Controllers\Api\Vouchers\DiscardVoucherController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')
@@ -35,5 +36,8 @@ Route::middleware('auth:sanctum')
             ->group(function () {
                 Route::post('generate', GenerateVoucherController::class)
                     ->name('generate');
+
+                Route::delete('{voucher_id}', DiscardVoucherController::class)
+                    ->name('discard');
             });
     });

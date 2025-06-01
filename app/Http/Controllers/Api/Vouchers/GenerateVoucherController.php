@@ -16,7 +16,7 @@ class GenerateVoucherController extends BaseController
         try {
             $voucher = $action->execute($request->user());
         } catch (Exception $exception) {
-            if ($exception instanceof  VoucherLimitException) {
+            if ($exception instanceof VoucherLimitException) {
                 return $this->errorResponse(
                     status: Response::HTTP_BAD_REQUEST,
                     message: $exception->getMessage()
