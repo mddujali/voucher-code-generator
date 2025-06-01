@@ -9,6 +9,7 @@ use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -33,11 +34,15 @@ class RegisterController extends BaseController
         } catch (Exception $exception) {
             DB::rollBack();
 
-            if ($exception instanceof  VoucherLimitException) {
+            if ($exception instanceof VoucherLimitException) {
                 return $this->errorResponse(
                     status: Response::HTTP_BAD_REQUEST,
                     message: $exception->getMessage()
                 );
+            }
+
+            if ($exception instanceof QueryException) {
+                return $this->queryErrorResponse($exception);
             }
 
             return $this->errorResponse(status: Response::HTTP_INTERNAL_SERVER_ERROR);

@@ -18,7 +18,7 @@ class VoucherFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => $this->faker->text(5),
+            'code' => $this->faker->text(config('voucher.length')),
         ];
     }
 }
