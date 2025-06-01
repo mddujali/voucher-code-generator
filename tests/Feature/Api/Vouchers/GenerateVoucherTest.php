@@ -31,6 +31,11 @@ class GenerateVoucherTest extends VoucherTestCase
         );
 
         $this->thenIExpectAResponse(Response::HTTP_BAD_REQUEST);
+        $this->thenIExpectAResponseStructure([
+            'error_code',
+            'message',
+            'errors',
+        ]);
     }
 
     public function test_it_should_generate_a_voucher(): void
@@ -44,5 +49,18 @@ class GenerateVoucherTest extends VoucherTestCase
         );
 
         $this->thenIExpectAResponse(Response::HTTP_CREATED);
+        $this->thenIExpectAResponseStructure([
+            'message',
+            'data' => [
+                'voucher' => [
+                    'id',
+                    'user_id',
+                    'code',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+        ]);
+        $this->thenIExpectInDatabase('vouchers', ['user_id' => $this->user->id]);
     }
 }

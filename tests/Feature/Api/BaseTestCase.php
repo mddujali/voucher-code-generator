@@ -54,4 +54,9 @@ class BaseTestCase extends TestCase
     {
         $this->assertDatabaseHas($table, $data);
     }
+
+    protected function thenIExpectDatabaseMissing(string $table, array $data): void
+    {
+        $this->assertDatabaseMissing($table, $data);
+    }
 }

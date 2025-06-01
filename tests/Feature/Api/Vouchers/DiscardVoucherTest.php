@@ -24,6 +24,11 @@ class DiscardVoucherTest extends VoucherTestCase
         );
 
         $this->thenIExpectAResponse(Response::HTTP_NOT_FOUND);
+        $this->thenIExpectAResponseStructure([
+            'error_code',
+            'message',
+            'errors',
+        ]);
     }
 
     public function test_it_should_not_discard_a_voucher_from_other_user(): void
@@ -48,6 +53,11 @@ class DiscardVoucherTest extends VoucherTestCase
         );
 
         $this->thenIExpectAResponse(Response::HTTP_FORBIDDEN);
+        $this->thenIExpectAResponseStructure([
+            'error_code',
+            'message',
+            'errors',
+        ]);
     }
 
     public function test_it_should_discard_a_voucher(): void
@@ -70,5 +80,6 @@ class DiscardVoucherTest extends VoucherTestCase
         );
 
         $this->thenIExpectAResponse(Response::HTTP_NO_CONTENT);
+        $this->thenIExpectDatabaseMissing('vouchers', ['voucher_id' => $voucher->id, 'user_id' => $this->user->id]);
     }
 }
