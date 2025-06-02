@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Profile\CurrentUserController;
 use App\Http\Controllers\Api\Vouchers\GenerateVoucherController;
 use App\Http\Controllers\Api\Vouchers\DiscardVoucherController;
+use App\Http\Controllers\Api\Vouchers\ShowVouchersController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')
@@ -34,6 +35,9 @@ Route::middleware('auth:sanctum')
         Route::prefix('vouchers')
             ->name('vouchers.')
             ->group(function () {
+                Route::get('', ShowVouchersController::class)
+                    ->name('list');
+
                 Route::post('generate', GenerateVoucherController::class)
                     ->name('generate');
 
