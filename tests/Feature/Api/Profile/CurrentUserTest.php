@@ -43,13 +43,11 @@ class CurrentUserTest extends BaseTestCase
         $this->thenIExpectAResponseStructure([
             'message',
             'data' => [
-                'user' => [
-                    'id',
-                    'name',
-                    'email',
-                    'created_at',
-                    'updated_at',
-                ],
+                'id',
+                'name',
+                'email',
+                'created_at',
+                'updated_at',
             ],
         ]);
     }

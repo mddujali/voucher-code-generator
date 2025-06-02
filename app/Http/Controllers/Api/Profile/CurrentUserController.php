@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Profile;
 
 use App\Http\Controllers\Api\BaseController;
+use App\Http\Resources\Api\Users\UserResource;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,6 +18,7 @@ class CurrentUserController extends BaseController
             return $this->errorResponse(status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return $this->successResponse(data: ['user' => $user]);
+        return (new UserResource($user))
+            ->setMessage(__('shared.common.success'));
     }
 }

@@ -61,13 +61,11 @@ class GenerateVoucherTest extends VoucherTestCase
         $this->thenIExpectAResponseStructure([
             'message',
             'data' => [
-                'voucher' => [
-                    'id',
-                    'user_id',
-                    'code',
-                    'created_at',
-                    'updated_at',
-                ],
+                'id',
+                'user',
+                'code',
+                'created_at',
+                'updated_at',
             ],
         ]);
         $this->thenIExpectInDatabase('vouchers', ['user_id' => $this->user->id]);

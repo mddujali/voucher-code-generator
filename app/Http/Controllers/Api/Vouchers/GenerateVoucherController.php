@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Vouchers;
 use App\Actions\GenerateVoucherAction;
 use App\Exceptions\VoucherLimitException;
 use App\Http\Controllers\Api\BaseController;
+use App\Http\Resources\Api\Vouchers\VoucherResource;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -26,12 +27,9 @@ class GenerateVoucherController extends BaseController
             return $this->errorResponse(status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return $this->successResponse(
-            status: Response::HTTP_CREATED,
-            message: 'Voucher code generated.',
-            data: [
-                'voucher' => $voucher,
-            ]
-        );
+        $voucher->load('user');
+
+        return (new VoucherResource($voucher))
+            ->setMessage('Voucher code generated.');
     }
 }
