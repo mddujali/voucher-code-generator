@@ -2,8 +2,11 @@
 
 namespace Tests\Feature\Api\Auth;
 
+use App\Mail\RegisteredUserEmail;
 use App\Models\User;
+use App\Models\Voucher;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Feature\Api\BaseTestCase;
 use Generator;
@@ -13,6 +16,8 @@ class RegisterTest extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        Mail::fake();
 
         $this->givenIHaveThisMethod('post');
         $this->givenIHaveThisRoute(route('api.auth.register'));
@@ -56,6 +61,8 @@ class RegisterTest extends BaseTestCase
             ->where('email', $data['email'])
             ->first();
 
+        $voucher = Voucher::query()->first();
+
         $this->thenIExpectAResponse(Response::HTTP_CREATED);
         $this->thenIExpectAResponseStructure([
             'message',
@@ -66,6 +73,7 @@ class RegisterTest extends BaseTestCase
         ]);
         $this->thenIExpectInDatabase('users', ['name' => $data['name'], 'email' => $data['email']]);
         $this->thenIExpectInDatabase('vouchers', ['user_id' => $user->id]);
+        $this->thenIExpectRegisteredUserEmailSent($user, $voucher);
     }
 
     public static function invalidFieldsDataProvider(): Generator
@@ -109,5 +117,12 @@ class RegisterTest extends BaseTestCase
                 'password_confirmation' => 'incorrectPassword',
             ],
         ];
+    }
+
+    private function thenIExpectRegisteredUserEmailSent(User $user, Voucher $voucher): void
+    {
+        Mail::assertSent(RegisteredUserEmail::class, function ($mail) use ($user, $voucher) {
+            return $mail->user->is($user) && $mail->voucher->is($voucher);
+        });
     }
 }

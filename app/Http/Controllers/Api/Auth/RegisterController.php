@@ -6,6 +6,7 @@ use App\Actions\GenerateVoucherAction;
 use App\Exceptions\VoucherLimitException;
 use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Api\Auth\RegisterRequest;
+use App\Mail\RegisteredUserEmail;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
 use Exception;
@@ -13,6 +14,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends BaseController
 {
@@ -28,7 +30,9 @@ class RegisterController extends BaseController
                     'password' => Hash::make($request->password),
                 ]);
 
-            $action->execute($user);
+            $voucher = $action->execute($user);
+
+            Mail::to($user->email)->send(new RegisteredUserEmail($user, $voucher));
 
             DB::commit();
         } catch (Exception $exception) {
