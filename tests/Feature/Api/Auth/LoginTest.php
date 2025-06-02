@@ -13,6 +13,7 @@ class LoginTest extends BaseTestCase
     {
         parent::setUp();
 
+        $this->givenIHaveThisMethod('post');
         $this->givenIHaveThisRoute(route('api.auth.login'));
     }
 
@@ -20,7 +21,7 @@ class LoginTest extends BaseTestCase
     public function test_it_should_not_login_a_user_with_invalid_fields($data): void
     {
         $this->whenICallThisEndpoint(
-            method: 'post',
+            method: $this->method,
             uri: $this->uri,
             data: $data,
             headers: $this->headers
@@ -42,7 +43,7 @@ class LoginTest extends BaseTestCase
         ];
 
         $this->whenICallThisEndpoint(
-            method: 'post',
+            method: $this->method,
             uri: $this->uri,
             data: $data,
             headers: $this->headers
@@ -64,7 +65,7 @@ class LoginTest extends BaseTestCase
         ];
 
         $this->whenICallThisEndpoint(
-            method: 'post',
+            method: $this->method,
             uri: $this->uri,
             data: $data,
             headers: $this->headers

@@ -13,13 +13,14 @@ class LogoutTest extends BaseTestCase
     {
         parent::setUp();
 
+        $this->givenIHaveThisMethod('post');
         $this->givenIHaveThisRoute(route('api.auth.logout'));
     }
 
     public function test_it_should_not_logout_unauthenticated_user(): void
     {
         $this->whenICallThisEndpoint(
-            method: 'post',
+            method: $this->method,
             uri: $this->uri,
             headers: $this->headers
         );
@@ -41,7 +42,7 @@ class LogoutTest extends BaseTestCase
         );
 
         $this->whenICallThisEndpoint(
-            method: 'post',
+            method: $this->method,
             uri: $this->uri,
             headers: $this->headers
         );

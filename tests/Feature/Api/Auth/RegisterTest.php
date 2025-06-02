@@ -14,6 +14,7 @@ class RegisterTest extends BaseTestCase
     {
         parent::setUp();
 
+        $this->givenIHaveThisMethod('post');
         $this->givenIHaveThisRoute(route('api.auth.register'));
     }
 
@@ -21,7 +22,7 @@ class RegisterTest extends BaseTestCase
     public function test_it_should_not_register_a_user_with_invalid_fields($data): void
     {
         $this->whenICallThisEndpoint(
-            method: 'post',
+            method: $this->method,
             uri: $this->uri,
             data: $data,
             headers: $this->headers
@@ -45,7 +46,7 @@ class RegisterTest extends BaseTestCase
         ];
 
         $this->whenICallThisEndpoint(
-            method: 'post',
+            method: $this->method,
             uri: $this->uri,
             data: $data,
             headers: $this->headers

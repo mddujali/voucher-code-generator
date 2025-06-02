@@ -10,11 +10,13 @@ class BaseTestCase extends TestCase
 {
     use RefreshDatabase;
 
+    protected string $method;
+
+    protected string $uri;
+
     protected array $headers = [
         'Accept' => 'application/json',
     ];
-
-    protected string $uri;
 
     protected TestResponse $response;
 
@@ -25,9 +27,19 @@ class BaseTestCase extends TestCase
         $this->artisan('db:seed', ['--class' => 'DatabaseSeeder']);
     }
 
+    protected function givenIHaveThisMethod(string $method): void
+    {
+        $this->method = $method;
+    }
+
     protected function givenIHaveThisRoute(string $route): void
     {
         $this->uri = $route;
+    }
+
+    protected function givenIHaveTheseHeaders(array $headers): void
+    {
+        $this->headers = $headers;
     }
 
     protected function whenICallThisEndpoint(string $method, string $uri, array $data = [], array $headers = []): void
