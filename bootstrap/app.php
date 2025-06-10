@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\Json\HttpJsonException;
+use App\Support\Traits\Http\Templates\Requests\Api\ResponseTemplate;
 use Illuminate\Foundation\Application;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -33,11 +34,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 $message = period_at_the_end(__('shared.http.' . $status));
                 $errors = [];
 
-                return response()->json([
-                    'error_code' => $errorCode,
-                    'message' => $message,
-                    'errors' => $errors,
-                ], $status);
+                return (new class () {
+                    use ResponseTemplate;
+                })->errorResponse(
+                    status: $status,
+                    errorCode: $errorCode,
+                    message: $message,
+                    errors: $errors,
+                );
             }
         });
 
@@ -52,13 +56,16 @@ return Application::configure(basePath: dirname(__DIR__))
                 $message = !blank($exception->getMessage())
                     ? $exception->getMessage()
                     : Response::$statusTexts[$status];
-                $errors = [];
+                $errors = $exception->getErrors();
 
-                return response()->json([
-                    'error_code' => $errorCode,
-                    'message' => $message,
-                    'errors' => $errors,
-                ], $status);
+                return (new class () {
+                    use ResponseTemplate;
+                })->errorResponse(
+                    status: $status,
+                    errorCode: $errorCode,
+                    message: $message,
+                    errors: $errors,
+                );
             }
         });
     })->create();

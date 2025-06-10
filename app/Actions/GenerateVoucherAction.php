@@ -18,7 +18,7 @@ class GenerateVoucherAction
         return $user->vouchers()
             ->create([
                 'user_id' => $user->id,
-                'code' => Str::random(config('voucher.length'))
+                'code' => Str::random(config('voucher.length')),
             ]);
     }
 }
